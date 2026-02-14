@@ -1,9 +1,8 @@
-import NoteDashboard from "./note/Notes";
-
+import Dashboard from "./Dashboard";
 export default function Home() {
   return (
     <div className="flex-grow ">
-      <NoteDashboard />
+      <Dashboard />
     </div>
   );
 }
