@@ -24,8 +24,8 @@ const Sidebar = async () => {
 
       <div className="mt-8">
         {notes.map((note) => (
-          <div key={note._id}>
-            <Link href={`/note/${note._id}`}>
+          <div key={note._id} className="mt-2">
+            <Link href={`/note_details/${note._id}`}>
               <div className="p-2 border bg-secondary border-gray-700 rounded-md">
                 <h1>{note.title}</h1>
               </div>
