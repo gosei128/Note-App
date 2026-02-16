@@ -1,19 +1,38 @@
+"use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
+  const router = useRouter();
   return (
-    <main className=" text-center flex items-center justify-center h-screen">
-      <div>
-        <h1 className="text-4xl font-bold text-primary">
-          Start Creating Your Note.
-        </h1>
-        <Link href="/create_notes">
-          <button className="border cursor-pointer px-12 py-2 rounded-xl mt-4 font-semibold bg-black border-gray-800">
-            Create
-          </button>
-        </Link>
-      </div>
-    </main>
+    <>
+      <nav className="absolute right-8 top-5 flex gap-4">
+        <button
+          className="border rounded-lg px-8 h-8 cursor-pointer"
+          onClick={() => {
+            router.push("/sign_up");
+          }}
+        >
+          Signup
+        </button>
+        <button className="border bg-black text-white rounded-lg px-8 h-8 ">
+          Login
+        </button>
+      </nav>
+
+      <main className=" text-center flex items-center justify-center h-screen">
+        <div>
+          <h1 className="text-4xl font-bold text-primary">
+            Start Creating Your Note.
+          </h1>
+          <Link href="/create_notes">
+            <button className="border cursor-pointer px-12 py-2 rounded-xl mt-4 font-semibold  border-gray-800">
+              Create
+            </button>
+          </Link>
+        </div>
+      </main>
+    </>
   );
 };
 

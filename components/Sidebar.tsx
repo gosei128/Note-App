@@ -19,7 +19,7 @@ const Sidebar = async () => {
   const notes = await getData();
 
   return (
-    <nav className="h-screen border border-gray-700 w-1/4 p-2 rounded-br-2xl rounded-tr-2xl">
+    <nav className="h-screen border absolute border-gray-700 w-1/4 p-2 rounded-br-2xl rounded-tr-2xl">
       <h1 className="text-3xl font-bold">Note Taking App</h1>
 
       <div className="mt-8">
