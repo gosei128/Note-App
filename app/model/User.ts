@@ -1,51 +1,104 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 import bcrypt from "bcrypt";
-type UserInfo = {
-  email: string;
-  password: string;
-};
+import jwt from "jsonwebtoken";
 
-interface IUser extends mongoose.Document {
-  _id: mongoose.Types.ObjectId;
+export interface IUser extends Document {
   email: string;
   password: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const UserAuth = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+export interface IAuthResults {
+  user: { _id: string; email: string };
+  token: string;
+}
+
+export interface IUserModel extends Model<IUser> {
+  signup(email: string, password: string): Promise<IAuthResults>;
+  login(email: string, password: string): Promise<IAuthResults>;
+}
+
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-});
+);
 
-UserAuth.statics.signup = async function ({ email, password }: UserInfo) {
-  if (!email || !password) {
-    throw Error("All fields must be filled");
-  }
+userSchema.statics.signup = async function (
+  email: string,
+  password: string,
+): Promise<IAuthResults> {
+  console.log("Signup called with:", { email, password }); // Add this
 
-  const exists = await this.findOne({ email });
+  //verification
+  const exist = await this.findOne({ email });
 
-  if (exists) {
+  if (exist) {
     throw Error("This email already exist");
   }
-
+  // hashing password
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
+
   const user = await this.create({ email, password: hash });
 
-  return user;
+  const token = jwt.sign(
+    { userId: user._id.toString() },
+    process.env.JWT_SECRET as string,
+    { expiresIn: "3d" },
+  );
+
+  return {
+    user: {
+      _id: user._id.toString(),
+      email: user.email,
+    },
+    token,
+  };
 };
 
-interface IUserModel extends mongoose.Model<IUser> {
-  signup(userInfo: UserInfo): Promise<IUser>;
-}
+userSchema.statics.login = async function (
+  email: string,
+  password: string,
+): Promise<IAuthResults> {
+  if (!email || !password) {
+    throw new Error("All fields must be filled");
+  }
 
-const User: IUserModel = (mongoose.models.User ??
-  mongoose.model<IUser, IUserModel>("User", UserAuth)) as IUserModel;
+  const user = await this.findOne({ email });
+  if (!user) {
+    throw new Error("Incorrect email");
+  }
 
-export default User;
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) {
+    throw new Error("Incorrect password");
+  }
+
+  const token = jwt.sign(
+    { userId: user._id.toString() },
+    process.env.JWT_SECRET as string,
+    { expiresIn: "3d" },
+  );
+
+  return {
+    user: {
+      _id: user._id.toString(),
+      email: user.email,
+    },
+    token,
+  };
+};
+export default (mongoose.models.User ||
+  mongoose.model<IUser, IUserModel>("User", userSchema)) as IUserModel;

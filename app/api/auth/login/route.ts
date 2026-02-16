@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import User from "@/app/model/User";
 import { connectDB } from "@/app/lib/mongodb";
+import User from "@/app/model/User";
+import { NextRequest, NextResponse } from "next/server";
 
-interface RegisterReqBody {
+interface LoginReqBody {
   email: string;
   password: string;
 }
@@ -11,11 +11,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     await connectDB();
 
-    const body: RegisterReqBody = await request.json();
-
+    const body: LoginReqBody = await request.json();
     const { email, password } = body;
 
-    const { user, token } = await User.signup(email, password);
+    //Call the static method from User model
+
+    const { user, token } = await User.login(email, password);
 
     return NextResponse.json(
       {
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   } catch (error: unknown) {
     const errorMessage =
-      error instanceof Error ? error.message : "An error occurred";
-    return NextResponse.json({ error: errorMessage }, { status: 400 });
+      error instanceof Error ? error.message : "An Error occured";
+    return NextResponse.json({ error: errorMessage }, { status: 401 });
   }
 }
