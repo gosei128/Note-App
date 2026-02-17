@@ -1,32 +1,23 @@
 "use client";
-import { register } from "@/app/lib/auth";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 import { useRouter } from "next/navigation";
+import { login } from "@/app/lib/auth";
 import Link from "next/link";
-import { ChangeEvent, FormEvent, useState } from "react";
 
-const SignupForm = () => {
+const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [confirmPass, setConfirmPass] = useState<string>("");
   const router = useRouter();
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (password != confirmPass) {
-      return alert("Password dont match");
-    }
+
     try {
-      await register(email, password);
+      await login(email, password);
       router.push("/");
     } catch (err: unknown) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Registration Failed";
+      const errorMessage = err instanceof Error ? err.message : "Login Failed";
       return errorMessage;
     }
   };
@@ -35,13 +26,13 @@ const SignupForm = () => {
       <form onSubmit={handleSubmit} className="w-1/4">
         <Card className="">
           <CardHeader className="text-center">
-            <h1 className="text-3xl font-bold">Sign Up</h1>
+            <h1 className="text-3xl font-bold">Login</h1>
           </CardHeader>
           <CardContent className=" flex flex-col">
             <div className="flex flex-col gap-2">
               <label>Email</label>
               <input
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setEmail(e.target.value)
                 }
                 type="text"
@@ -53,18 +44,8 @@ const SignupForm = () => {
               <input
                 placeholder="Enter password"
                 required
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setPassword(e.target.value)
-                }
-                className="p-2 border  border-gray-300 rounded-lg"
-                type="password"
-              />
-              <label>Confirm Password</label>
-              <input
-                placeholder="Enter password"
-                required
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setConfirmPass(e.target.value)
                 }
                 className="p-2 border  border-gray-300 rounded-lg"
                 type="password"
@@ -73,16 +54,16 @@ const SignupForm = () => {
           </CardContent>
           <CardFooter className="flex flex-col">
             <button className="border text-white bg-black w-full h-10 rounded-lg font-semibold">
-              Sign Up
+              Login
             </button>
 
             <h6 className="text-xs">
-              Already have account?{" "}
+              Don't have account yet?{" "}
               <Link
-                href="/login"
+                href="/sign_up"
                 className="text-primary underline font-semibold"
               >
-                Login
+                Sign Up
               </Link>{" "}
             </h6>
           </CardFooter>
@@ -91,4 +72,5 @@ const SignupForm = () => {
     </main>
   );
 };
-export default SignupForm;
+
+export default Login;

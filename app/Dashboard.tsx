@@ -8,19 +8,22 @@ const Dashboard = () => {
     <>
       <nav className="absolute right-8 top-5 flex gap-4">
         <button
-          className="border rounded-lg px-8 h-8 cursor-pointer"
+          className="border border-gray-300 shadow-md rounded-lg px-8 h-8 cursor-pointer"
           onClick={() => {
             router.push("/sign_up");
           }}
         >
           Signup
         </button>
-        <button className="border bg-black text-white rounded-lg px-8 h-8 ">
+        <button
+          onClick={() => router.push("/login")}
+          className="border bg-black shadow-md text-white rounded-lg px-8 h-8 cursor-pointer"
+        >
           Login
         </button>
       </nav>
 
-      <main className=" text-center flex items-center justify-center h-screen">
+      <main className=" text-center flex flex-grow items-center justify-center h-screen">
         <div>
           <h1 className="text-4xl font-bold text-primary">
             Start Creating Your Note.
