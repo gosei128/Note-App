@@ -1,9 +1,13 @@
 "use client";
+import { useAuth } from "@/context/authContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
   const router = useRouter();
+  const { user } = useAuth();
+  console.log(user);
+
   return (
     <>
       <nav className="absolute right-8 top-5 flex gap-4">
@@ -23,7 +27,7 @@ const Dashboard = () => {
         </button>
       </nav>
 
-      <main className=" text-center flex flex-grow items-center justify-center h-screen">
+      <main className=" text-center flex grow items-center justify-center h-screen">
         <div>
           <h1 className="text-4xl font-bold text-primary">
             Start Creating Your Note.

@@ -10,7 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
     try {
@@ -58,7 +58,7 @@ const Login = () => {
             </button>
 
             <h6 className="text-xs">
-              Don't have account yet?{" "}
+              Don&apos;t have account yet?{" "}
               <Link
                 href="/sign_up"
                 className="text-primary underline font-semibold"
