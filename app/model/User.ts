@@ -1,6 +1,7 @@
 import mongoose, { Document, Model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import validator from "validator";
 
 export interface IUser extends Document {
   email: string;
@@ -24,6 +25,8 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
+      unique: true,
+      lowercase: true,
     },
     password: {
       type: String,
@@ -41,6 +44,9 @@ userSchema.statics.signup = async function (
 ): Promise<IAuthResults> {
   console.log("Signup called with:", { email, password }); // Add this
 
+  if (!validator.isEmail(email)) {
+    throw new Error("Invalid email");
+  }
   //verification
   const exist = await this.findOne({ email });
 
@@ -78,7 +84,7 @@ userSchema.statics.login = async function (
 
   const user = await this.findOne({ email });
   if (!user) {
-    throw new Error("Incorrect email");
+    throw new Error("Incorrect email or password");
   }
 
   const match = await bcrypt.compare(password, user.password);

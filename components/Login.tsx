@@ -8,9 +8,12 @@ import Link from "next/link";
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
+    event,
+  ) => {
     event.preventDefault();
 
     try {
@@ -18,7 +21,7 @@ const Login = () => {
       router.push("/");
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Login Failed";
-      return errorMessage;
+      setError(errorMessage);
     }
   };
   return (
@@ -40,6 +43,7 @@ const Login = () => {
                 className="p-2 border border-gray-300 rounded-lg"
                 placeholder="Enter your email"
               />
+              {error && <div className="text-red-500">{error}</div>}
               <label>Password</label>
               <input
                 placeholder="Enter password"

@@ -14,12 +14,14 @@ const SignupForm = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPass, setConfirmPass] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (password != confirmPass) {
-      return alert("Password dont match");
+      setError("Passwords do not match");
+      return;
     }
     try {
       await register(email, password);
@@ -27,7 +29,7 @@ const SignupForm = () => {
     } catch (err: unknown) {
       const errorMessage =
         err instanceof Error ? err.message : "Registration Failed";
-      return errorMessage;
+      setError(errorMessage);
     }
   };
   return (
@@ -49,6 +51,10 @@ const SignupForm = () => {
                 className="p-2 border border-gray-300 rounded-lg"
                 placeholder="Enter your email"
               />
+              {error == "Email already exists" ||
+                (error == "Invalid email" && (
+                  <div className="text-red-500">{error}</div>
+                ))}
               <label>Password</label>
               <input
                 placeholder="Enter password"
@@ -59,6 +65,11 @@ const SignupForm = () => {
                 className="p-2 border  border-gray-300 rounded-lg"
                 type="password"
               />
+              {error == "Passwords do not match" && (
+                <div className="text-red-500">
+                  <small>{error}</small>
+                </div>
+              )}
               <label>Confirm Password</label>
               <input
                 placeholder="Enter password"
@@ -69,6 +80,11 @@ const SignupForm = () => {
                 className="p-2 border  border-gray-300 rounded-lg"
                 type="password"
               />
+              {error == "Passwords do not match" && (
+                <div className="text-red-500">
+                  <small>{error}</small>
+                </div>
+              )}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col">

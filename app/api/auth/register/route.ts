@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/app/model/User";
 import { connectDB } from "@/app/lib/mongodb";
-
 interface RegisterReqBody {
   email: string;
   password: string;

@@ -11,8 +11,10 @@ async function getData(): Promise<Note[]> {
       revalidate: 0,
     },
   });
+  const data = await res.json();
 
-  return res.json();
+  if (!data || !Array.isArray(data.notes)) return [];
+  return data.notes as Note[];
 }
 
 const Sidebar = async () => {

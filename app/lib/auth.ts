@@ -53,3 +53,7 @@ export const login = async (
 
   return authData;
 };
+export const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+};
