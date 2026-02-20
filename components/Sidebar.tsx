@@ -1,3 +1,7 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { getNotes } from "@/app/lib/note";
 import Link from "next/link";
 
 interface Note {
@@ -5,20 +9,23 @@ interface Note {
   title: string;
 }
 
-async function getData(): Promise<Note[]> {
-  const res = await fetch("http://localhost:3000/api/notes", {
-    next: {
-      revalidate: 0,
-    },
-  });
-  const data = await res.json();
+export default function Sidebar() {
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!data || !Array.isArray(data.notes)) return [];
-  return data.notes as Note[];
-}
+  useEffect(() => {
+    async function loadNotes() {
+      try {
+        const data = await getNotes();
+        setNotes(data);
+      } catch (err: any) {
+        console.error("failed to load notes", err);
+        setError(err.message);
+      }
+    }
 
-const Sidebar = async () => {
-  const notes = await getData();
+    loadNotes();
+  }, []);
 
   return (
     <nav className="h-screen border border-gray-700 w-1/4 p-2 rounded-br-2xl rounded-tr-2xl">
@@ -37,6 +44,4 @@ const Sidebar = async () => {
       </div>
     </nav>
   );
-};
-
-export default Sidebar;
+}
